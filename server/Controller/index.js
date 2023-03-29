@@ -47,6 +47,8 @@ class Controller {
             next(error);
         }
     }
+
+    static async UserData() {}
 }
 
 module.exports = Controller;
