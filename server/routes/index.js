@@ -6,5 +6,5 @@ router.post("/users/register", Controller.userRegister);
 
 router.post("/users/login", Controller.userLogin);
 
-router.get("/isers/data", Controller.UserData);
+router.get("/users/data", Controller.userData);
 module.exports = router;

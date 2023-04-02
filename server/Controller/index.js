@@ -48,7 +48,23 @@ class Controller {
         }
     }
 
-    static async UserData() {}
+    static async userData(req, res) {
+        try {
+            const userData = await User.findAll();
+            if (userData.length > 0) {
+                res.status(201).json({
+                    DataPengguna: userData,
+                });
+            } else {
+                res.status(200).json({
+                    message: "Gagal mendapatkan data",
+                    data: [],
+                });
+            }
+        } catch (error) {
+            next(error);
+        }
+    }
 }
 
 module.exports = Controller;

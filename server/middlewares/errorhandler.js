@@ -11,7 +11,7 @@ const errorHandler = (err, req, res, next) => {
         code = 400;
         message = err.errors[0].message;
     } else if (err.name === "login tidak valdi") {
-        code = 4001;
+        code = 401;
         message = "invaldi login or password";
     }
 
