@@ -50,7 +50,9 @@ class Controller {
 
     static async userData(req, res) {
         try {
-            const userData = await User.findAll();
+            const userData = await User.findAll({
+                attributes: ["id", "username", "password"],
+            });
             if (userData.length > 0) {
                 res.status(201).json({
                     DataPengguna: userData,
