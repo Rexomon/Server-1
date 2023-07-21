@@ -23,7 +23,7 @@ class Controller {
 
             const userLogin = await User.findOne({ where: { username } });
 
-            const error = { name: "login tidak valdi" };
+            const error = Error("Login yang bener woi ");
 
             if (!userLogin) {
                 throw error;
@@ -37,21 +37,28 @@ class Controller {
                         id: userLogin.id,
                     });
 
-                    res.status(200).json({
-                        acces_token,
+                    // res.status(200).json({
+                    //     acces_token,
+                    //     username: userLogin.username,
+                    // });
+                    res.cookie("accessToken", acces_token, { httpOnly: true });
+
+                    // Pass the session data to the view and render it
+                    res.render("home.ejs", {
                         username: userLogin.username,
+                        loginSuccess: true,
                     });
                 }
             }
         } catch (error) {
-            next(error);
+            res.redirect(`/login.html?loginFailed=true`);
         }
     }
 
     static async userData(req, res) {
         try {
             const userData = await User.findAll({
-                attributes: ["id", "username", "password"],
+                attributes: ["id", "username"],
             });
             if (userData.length > 0) {
                 res.status(201).json({

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Website</title>
+    <link rel="stylesheet" href="/home.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">My Website</div>
+            <ul class="menu">
+                <li><a href="#">Home</a></li>
+                <li><a href="#">About</a></li>
+                <li><a href="#">Services</a></li>
+                <li><a href="#">Contact</a></li>
+            </ul>
+            <% if (username) { %>
+                <div id="userButtons">
+                    <span id="userName">Welcome, <%= username %></span>
+                    <button id="logoutButton" onclick="logout()">Logout</button>
+                </div>
+            <% } else { %>
+                <button id="loginButton" onclick="window.location.href = '/login.html';">Login</button>
+            <% } %>
+        </nav>
+    </header>
+    <main>
+        <section class="hero">
+            <h1>Welcome to My Website</h1>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis a tortor vel lacus rhoncus tempus et eu risus.</p>
+            <a href="#" class="btn">Learn More</a>
+        </section>
+        <section class="features">
+            <h2>Features</h2>
+            <div class="feature">
+                <img src="feature1.jpg" alt="Feature 1">
+                <h3>Feature 1</h3>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+            </div>
+            <div class="feature">
+                <img src="feature2.jpg" alt="Feature 2">
+                <h3>Feature 2</h3>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+            </div>
+            <!-- Add more features as needed -->
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2023 My Website. All rights reserved.</p>
+    </footer>
+
+    <script>
+        function getParameterByName(name, url) {
+            if (!url) url = window.location.href;
+            name = name.replace(/[[\]]/g, '\\$&');
+            var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+            results = regex.exec(url);
+            if (!results) return null;
+            if (!results[2]) return '';
+            return decodeURIComponent(results[2].replace(/\+/g, ' '));
+        }
+
+        // Check if the loginSuccess query parameter is present
+        var loginSuccess = getParameterByName('loginSuccess');
+
+        // Check if the loginSuccess flag is already set in sessionStorage
+        var loginSuccessFlag = sessionStorage.getItem('loginSuccessFlag');
+
+        if (loginSuccess && !loginSuccessFlag) {
+            // Show the alert only if loginSuccess is presefnt and loginSuccessFlag is not set
+            alert('Login successful!');
+
+            // Set the flag in sessionStorage to indicate that the alert has been shown
+            sessionStorage.setItem('loginSuccessFlag', 'true');
+        }
+
+        // Check if the user is logged in (check if user name is stored in the session storage)
+        var userName = sessionStorage.getItem('username');
+        const accesToken = getCookie("accesToken")
+
+        if (userName && accesToken) {
+            // If user name is found in session storage, show the user's name and the logout button
+            document.getElementById('userName').textContent = 'Welcome, ' + userName;
+            document.getElementById('userButtons').style.display = 'block';
+            document.getElementById('loginButton').style.display = 'none';
+        } else {
+            // If user name is not found in session storage, hide the user's name and the logout button
+            document.getElementById('userButtons').style.display = 'none';
+            document.getElementById('loginButton').style.display = 'block';
+        }
+
+        function logout() {
+            // Clear the session storage, including the loginSuccessFlag
+            sessionStorage.clear();
+
+            document.cookie = "accessToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+            // Redirect the user to the login page after logout
+            window.location.href = '/home.ejs';
+        }
+    </script>
+</body>
+</html>

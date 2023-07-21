@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>User Data Table</title>
+  <link rel="stylesheet" href="userdata.css">
+</head>
+<body>
+  <div class="container">
+    <h1>User Data Table</h1>
+    <table>
+      <thead>
+        <tr>
+          <th>No</th>
+          <th>Username</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="userDataList">
+        <!-- User data will be added here dynamically -->
+      </tbody>
+    </table>
+  </div>
+  <script>
+    function updateUserData(id) {
+      const newUsername = prompt('Enter new username:');
+      if (newUsername) {
+        fetch(`/userData/${id}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ username: newUsername })
+        })
+        .then(response => response.json())
+        .then(data => {
+          alert(data.message);
+          populateUserData();
+        })
+        .catch(error => console.error('Error updating user:', error));
+      }
+    }
+
+    function deleteUserData(id) {
+      const confirmDelete = confirm('Are you sure you want to delete this user?');
+      if (confirmDelete) {
+        fetch(`/userData/${id}`, {
+          method: 'DELETE'
+        })
+        .then(response => response.json())
+        .then(data => {
+          alert(data.message);
+          populateUserData();
+        })
+        .catch(error => console.error('Error deleting user:', error));
+      }
+    }
+
+    function populateUserData() {
+      fetch('/userData')
+        .then(response => response.json())
+        .then(data => {
+          const userDataList = document.getElementById('userDataList');
+          userDataList.innerHTML = '';
+          data.DataPengguna.forEach((user, index) => {
+            const tr = document.createElement('tr');
+            const noTd = document.createElement('td');
+            const usernameTd = document.createElement('td');
+            const actionTd = document.createElement('td');
+            const updateButton = document.createElement('button');
+            const deleteButton = document.createElement('button');
+          
+            noTd.textContent = index + 1;
+            usernameTd.textContent = user.username;
+            updateButton.textContent = 'Update';
+            deleteButton.textContent = 'Delete';
+          
+            updateButton.className = 'action-button update';
+            deleteButton.className = 'action-button delete';
+          
+            updateButton.addEventListener('click', () => {
+              updateUserData(user.id);
+            });
+
+            deleteButton.addEventListener('click', () => {
+              deleteUserData(user.id);
+            });
+
+            actionTd.appendChild(updateButton);
+            actionTd.appendChild(deleteButton);
+
+            tr.appendChild(noTd);
+            tr.appendChild(usernameTd);
+            tr.appendChild(actionTd);
+            userDataList.appendChild(tr);
+          });
+        })
+        .catch(error => console.error('Error fetching user data:', error));
+    }
+
+    // Initial population of user data
+    populateUserData();
+  </script>
+</body>
+</html>
